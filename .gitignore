@@ -1,0 +1,17 @@
+# Backend
+interview-system/target/
+interview-system/*.class
+
+# Frontend
+interview-slot-system-frontend/node_modules/
+interview-slot-system-frontend/dist/
+
+# ZIP files
+backend.zip
+frontend.zip
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.metadata/ 
