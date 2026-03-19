@@ -10,6 +10,7 @@ import com.interview.system.model.InterviewSlot;
 import com.interview.system.model.InterviewSlot.SlotStatus;
 import com.interview.system.model.Job;
 import com.interview.system.model.User;
+import com.interview.system.repository.FeedbackRepository;
 import com.interview.system.repository.InterviewRepository;
 import com.interview.system.repository.JobRepository;
 import com.interview.system.repository.SlotRepository;
@@ -34,6 +35,9 @@ public class InterviewService {
     @Autowired
     private JobRepository jobRepository;
 
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
     public List<Interview> getAllInterviews() {
         return interviewRepository.findAll();
     }
@@ -53,6 +57,10 @@ public class InterviewService {
     public Interview getInterviewById(Long id) {
         return interviewRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Interview", id));
+    }
+
+    public List<Feedback> getAllFeedbacks() {
+        return feedbackRepository.findAll();
     }
 
     @Transactional
@@ -106,27 +114,37 @@ public class InterviewService {
     }
 
     @Transactional
-    public Feedback submitFeedback(FeedbackRequest request, Long interviewerId) {
+    public Feedback submitFeedback(FeedbackRequest request, Long userId) {
         Interview interview = getInterviewById(request.getInterviewId());
 
-        if (interview.getStatus() != InterviewStatus.COMPLETED)
-            throw new IllegalStateException("Feedback only allowed for completed interviews.");
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", userId));
 
-        if (interview.getFeedback() != null)
-            throw new IllegalStateException("Feedback already submitted.");
+        String feedbackType = request.getFeedbackType();
 
-        User interviewer = userRepository.findById(interviewerId)
-                .orElseThrow(() -> new ResourceNotFoundException("User", interviewerId));
+        // If interviewer — only allow for completed interviews
+        if ("INTERVIEWER".equals(feedbackType)) {
+            if (interview.getStatus() != InterviewStatus.COMPLETED)
+                throw new IllegalStateException("Feedback only allowed for completed interviews.");
+
+            if (interview.getFeedback() != null)
+                throw new IllegalStateException("Feedback already submitted.");
+        }
 
         Feedback feedback = new Feedback();
         feedback.setInterview(interview);
-        feedback.setInterviewer(interviewer);
+        feedback.setInterviewer(user);
         feedback.setComments(request.getComments());
         feedback.setRating(request.getRating());
-        feedback.setDecision(request.getDecision());
+        feedback.setFeedbackType(feedbackType);
 
-        interview.setFeedback(feedback);
-        interviewRepository.save(interview);
-        return feedback;
+        // Only set decision for interviewer feedback
+        if ("INTERVIEWER".equals(feedbackType)) {
+            feedback.setDecision(request.getDecision());
+            interview.setFeedback(feedback);
+            interviewRepository.save(interview);
+        }
+
+        return feedbackRepository.save(feedback);
     }
 }

@@ -18,18 +18,18 @@ public class FeedbackRequest {
     @NotNull(message = "Rating is required")
     private Integer rating;
 
-    @NotNull(message = "Decision is required")
     private Decision decision;
 
-    public Long getInterviewId() { return interviewId; }
-    public void setInterviewId(Long interviewId) { this.interviewId = interviewId; }
+    private String feedbackType;
 
-    public String getComments() { return comments; }
-    public void setComments(String comments) { this.comments = comments; }
-
-    public Integer getRating() { return rating; }
-    public void setRating(Integer rating) { this.rating = rating; }
-
-    public Decision getDecision() { return decision; }
-    public void setDecision(Decision decision) { this.decision = decision; }
+    public Long getInterviewId()                  { return interviewId; }
+    public void setInterviewId(Long interviewId)  { this.interviewId = interviewId; }
+    public String getComments()                   { return comments; }
+    public void setComments(String comments)      { this.comments = comments; }
+    public Integer getRating()                    { return rating; }
+    public void setRating(Integer rating)         { this.rating = rating; }
+    public Decision getDecision()                 { return decision; }
+    public void setDecision(Decision decision)    { this.decision = decision; }
+    public String getFeedbackType()               { return feedbackType; }
+    public void setFeedbackType(String feedbackType) { this.feedbackType = feedbackType; }
 }

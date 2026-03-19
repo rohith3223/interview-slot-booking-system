@@ -56,17 +56,26 @@ public class InterviewController {
         return ResponseEntity.ok(interviewService.getByInterviewer(id));
     }
 
+    // ✅ New API — Get all feedbacks for Admin/HR
+    @GetMapping("/feedback")
+    @PreAuthorize("hasAnyRole('ADMIN','HR')")
+    public ResponseEntity<List<Feedback>> getAllFeedbacks() {
+        return ResponseEntity.ok(interviewService.getAllFeedbacks());
+    }
+
     @PostMapping("/book")
     @PreAuthorize("hasRole('CANDIDATE')")
-    public ResponseEntity<Interview> book(@Valid @RequestBody SlotBookingRequest request,
-                                          @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<Interview> book(
+            @Valid @RequestBody SlotBookingRequest request,
+            @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(interviewService.bookSlot(request, currentUser.getId()));
     }
 
     @PatchMapping("/{id}/cancel")
-    public ResponseEntity<Interview> cancel(@PathVariable Long id,
-                                            @AuthenticationPrincipal User currentUser) {
+    public ResponseEntity<Interview> cancel(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.ok(interviewService.cancelInterview(id, currentUser.getId()));
     }
 
@@ -76,10 +85,12 @@ public class InterviewController {
         return ResponseEntity.ok(interviewService.completeInterview(id));
     }
 
+    // ✅ Updated — Now allows CANDIDATE and INTERVIEWER both
     @PostMapping("/feedback")
-    @PreAuthorize("hasRole('INTERVIEWER')")
-    public ResponseEntity<Feedback> feedback(@Valid @RequestBody FeedbackRequest request,
-                                             @AuthenticationPrincipal User currentUser) {
+    @PreAuthorize("hasAnyRole('INTERVIEWER','CANDIDATE')")
+    public ResponseEntity<Feedback> feedback(
+            @Valid @RequestBody FeedbackRequest request,
+            @AuthenticationPrincipal User currentUser) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(interviewService.submitFeedback(request, currentUser.getId()));
     }
