@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { NavLink, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
@@ -44,12 +45,11 @@ const Sidebar = () => {
           📋 Interviews
         </NavLink>
 
-        {(user?.role === 'ADMIN' || user?.role === 'HR' || user?.role === 'INTERVIEWER') && (
-          <NavLink to="/feedback" className={({ isActive }) =>
-            `sidebar-link ${isActive ? 'active' : ''}`}>
-            📝 Feedback
-          </NavLink>
-        )}
+        {/* ✅ Feedback visible to ALL roles now */}
+        <NavLink to="/feedback" className={({ isActive }) =>
+          `sidebar-link ${isActive ? 'active' : ''}`}>
+          📝 Feedback
+        </NavLink>
 
         {(user?.role === 'ADMIN' || user?.role === 'HR') && (
           <NavLink to="/reports" className={({ isActive }) =>

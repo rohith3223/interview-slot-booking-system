@@ -20,8 +20,11 @@ const AppRoutes = () => {
       <Route path="/jobs" element={<ProtectedRoute><JobList /></ProtectedRoute>} />
       <Route path="/slots" element={<ProtectedRoute><SlotBooking /></ProtectedRoute>} />
       <Route path="/interviews" element={<ProtectedRoute><InterviewSchedule /></ProtectedRoute>} />
-      <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
-      <Route path="/reports" element={<ProtectedRoute roles={['ADMIN', 'HR']}><Reports /></ProtectedRoute>} />
+<Route path="/feedback" element={
+  <ProtectedRoute>
+    <Feedback />
+  </ProtectedRoute>
+} />      <Route path="/reports" element={<ProtectedRoute roles={['ADMIN', 'HR']}><Reports /></ProtectedRoute>} />
       <Route path="/admin" element={<ProtectedRoute roles={['ADMIN']}><AdminPanel /></ProtectedRoute>} />
     </Routes>
   )
