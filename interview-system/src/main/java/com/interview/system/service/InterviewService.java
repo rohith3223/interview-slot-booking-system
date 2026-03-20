@@ -38,6 +38,9 @@ public class InterviewService {
     @Autowired
     private FeedbackRepository feedbackRepository;
 
+    @Autowired
+    private JobService jobService;
+
     public List<Interview> getAllInterviews() {
         return interviewRepository.findAll();
     }
@@ -80,6 +83,18 @@ public class InterviewService {
         Job job = jobRepository.findById(request.getJobId())
                 .orElseThrow(() -> new ResourceNotFoundException("Job", request.getJobId()));
 
+        // ✅ Check if job has reached max candidates
+        if (job.getMaxCandidates() != null && job.getBookingCount() != null
+                && job.getBookingCount() >= job.getMaxCandidates()) {
+            throw new IllegalStateException("This job has reached maximum candidates!");
+        }
+
+        // ✅ Check if job is expired
+        if (job.getExpiryDate() != null
+                && job.getExpiryDate().isBefore(java.time.LocalDateTime.now())) {
+            throw new IllegalStateException("This job posting has expired!");
+        }
+
         slot.setStatus(SlotStatus.BOOKED);
         slotRepository.save(slot);
 
@@ -89,7 +104,17 @@ public class InterviewService {
         interview.setJob(job);
         interview.setStatus(InterviewStatus.SCHEDULED);
 
-        return interviewRepository.save(interview);
+        // ✅ Get interview mode from SLOT
+        interview.setInterviewMode(slot.getInterviewMode() != null
+                ? slot.getInterviewMode() : "ONLINE");
+        interview.setModeDetails(slot.getModeDetails());
+
+        Interview saved = interviewRepository.save(interview);
+
+        // ✅ Increment booking count
+        jobService.incrementBookingCount(job.getId());
+
+        return saved;
     }
 
     @Transactional
@@ -122,7 +147,6 @@ public class InterviewService {
 
         String feedbackType = request.getFeedbackType();
 
-        // If interviewer — only allow for completed interviews
         if ("INTERVIEWER".equals(feedbackType)) {
             if (interview.getStatus() != InterviewStatus.COMPLETED)
                 throw new IllegalStateException("Feedback only allowed for completed interviews.");
@@ -138,7 +162,6 @@ public class InterviewService {
         feedback.setRating(request.getRating());
         feedback.setFeedbackType(feedbackType);
 
-        // Only set decision for interviewer feedback
         if ("INTERVIEWER".equals(feedbackType)) {
             feedback.setDecision(request.getDecision());
             interview.setFeedback(feedback);

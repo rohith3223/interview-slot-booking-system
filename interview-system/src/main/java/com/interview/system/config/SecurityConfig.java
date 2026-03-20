@@ -22,8 +22,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired private UserDetailsService userDetailsService;
-    @Autowired private JwtAuthFilter jwtAuthFilter;
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,7 +44,8 @@ public class SecurityConfig {
             )
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();}
+        return http.build();
+    }
 
     @Bean
     public AuthenticationProvider authenticationProvider() {

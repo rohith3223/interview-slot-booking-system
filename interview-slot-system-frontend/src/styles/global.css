@@ -203,6 +203,20 @@ body.dark-mode {
   color: #e0e0e0 !important;
 }
 
+body.dark-mode .sidebar {
+  background: linear-gradient(180deg, #0d0d1a 0%, #0a0a14 50%, #070710 100%) !important;
+}
+
+body.dark-mode .main-content {
+  background-color: #1a1a2e !important;
+}
+
+body.dark-mode .navbar-top {
+  background-color: #16213e !important;
+  border-bottom: 1px solid #0f3460 !important;
+  color: #e0e0e0 !important;
+}
+
 body.dark-mode .card {
   background-color: #16213e !important;
   border-color: #0f3460 !important;
@@ -215,30 +229,144 @@ body.dark-mode .card-header {
   border-color: #0f3460 !important;
 }
 
-body.dark-mode .main-content {
-  background-color: #1a1a2e !important;
+body.dark-mode .card-body {
+  background-color: #16213e !important;
+  color: #e0e0e0 !important;
 }
 
-body.dark-mode .form-control,
+body.dark-mode .card-footer {
+  background-color: #16213e !important;
+  border-color: #0f3460 !important;
+}
+
+/* ✅ Fix form inputs */
+body.dark-mode .form-control {
+  background-color: #0f3460 !important;
+  border-color: #1a4a8a !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .form-control:focus {
+  background-color: #0f3460 !important;
+  border-color: #667eea !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25) !important;
+}
+
+body.dark-mode .form-control::placeholder {
+  color: #8899aa !important;
+}
+
+/* ✅ Fix select dropdowns */
 body.dark-mode .form-select {
+  background-color: #0f3460 !important;
+  border-color: #1a4a8a !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .form-select:focus {
+  background-color: #0f3460 !important;
+  border-color: #667eea !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode select option {
+  background-color: #0f3460 !important;
+  color: #e0e0e0 !important;
+}
+
+/* ✅ Fix textarea */
+body.dark-mode textarea {
+  background-color: #0f3460 !important;
+  border-color: #1a4a8a !important;
+  color: #e0e0e0 !important;
+}
+
+/* ✅ Fix table */
+body.dark-mode .table {
+  color: #e0e0e0 !important;
+  border-color: #0f3460 !important;
+}
+
+body.dark-mode .table th {
+  color: #a0b0c0 !important;
+  border-color: #0f3460 !important;
+}
+
+body.dark-mode .table td {
+  border-color: #0f3460 !important;
+}
+
+body.dark-mode .table-hover tbody tr:hover {
+  background-color: #0f3460 !important;
+  color: #e0e0e0 !important;
+}
+
+/* ✅ Fix text colors */
+body.dark-mode .text-muted {
+  color: #8899aa !important;
+}
+
+body.dark-mode h1, body.dark-mode h2,
+body.dark-mode h3, body.dark-mode h4,
+body.dark-mode h5, body.dark-mode h6 {
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode p {
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode label {
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode small {
+  color: #8899aa !important;
+}
+
+/* ✅ Fix slot card */
+body.dark-mode .slot-card {
   background-color: #16213e !important;
   border-color: #0f3460 !important;
   color: #e0e0e0 !important;
 }
 
-body.dark-mode .table {
+/* ✅ Fix bg-light */
+body.dark-mode .bg-light {
+  background-color: #0f3460 !important;
   color: #e0e0e0 !important;
 }
 
-body.dark-mode .table-hover tbody tr:hover {
+/* ✅ Fix outline buttons */
+body.dark-mode .btn-outline-secondary {
+  color: #e0e0e0 !important;
+  border-color: #8899aa !important;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
   background-color: #0f3460 !important;
+  color: #e0e0e0 !important;
 }
 
-body.dark-mode .text-muted {
-  color: #a0a0b0 !important;
+/* ✅ Fix form check */
+body.dark-mode .form-check-label {
+  color: #e0e0e0 !important;
 }
 
-body.dark-mode .navbar-top {
-  background-color: #16213e !important;
-  border-bottom: 1px solid #0f3460 !important;
+/* ✅ Fix stat cards */
+body.dark-mode .stat-card {
+  opacity: 0.9;
+}
+
+/* ✅ Fix all input types */
+body.dark-mode input[type="number"],
+body.dark-mode input[type="text"],
+body.dark-mode input[type="email"],
+body.dark-mode input[type="password"],
+body.dark-mode input[type="url"],
+body.dark-mode input[type="datetime-local"] {
+  background-color: #0f3460 !important;
+  border-color: #1a4a8a !important;
+  color: #e0e0e0 !important;
 }

@@ -36,18 +36,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         String jwt = authHeader.substring(7);
-        String email = jwtUtil.extractUsername(jwt);
 
-        if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            userRepository.findByEmail(email).ifPresent(user -> {
-                if (jwtUtil.isTokenValid(jwt, user)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    user, null, user.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            });
+        try {
+            String email = jwtUtil.extractUsername(jwt);
+
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                userRepository.findByEmail(email).ifPresent(user -> {
+                    if (jwtUtil.isTokenValid(jwt, user)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        user, null, user.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            // ✅ Token expired or invalid — just ignore and continue
+            // User will be treated as unauthenticated
+            SecurityContextHolder.clearContext();
         }
+
         filterChain.doFilter(request, response);
     }
 }

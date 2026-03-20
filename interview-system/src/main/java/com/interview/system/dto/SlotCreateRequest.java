@@ -17,15 +17,21 @@ public class SlotCreateRequest {
     @NotNull(message = "End time is required")
     private LocalDateTime endTime;
 
-    public Long getJobId() { return jobId; }
-    public void setJobId(Long jobId) { this.jobId = jobId; }
+    // ✅ New fields for Online/Offline mode
+    private String interviewMode;
 
-    public Long getInterviewerId() { return interviewerId; }
-    public void setInterviewerId(Long interviewerId) { this.interviewerId = interviewerId; }
+    private String modeDetails;
 
-    public LocalDateTime getStartTime() { return startTime; }
-    public void setStartTime(LocalDateTime startTime) { this.startTime = startTime; }
-
-    public LocalDateTime getEndTime() { return endTime; }
-    public void setEndTime(LocalDateTime endTime) { this.endTime = endTime; }
+    public Long getJobId()                             { return jobId; }
+    public void setJobId(Long jobId)                   { this.jobId = jobId; }
+    public Long getInterviewerId()                     { return interviewerId; }
+    public void setInterviewerId(Long interviewerId)   { this.interviewerId = interviewerId; }
+    public LocalDateTime getStartTime()                { return startTime; }
+    public void setStartTime(LocalDateTime startTime)  { this.startTime = startTime; }
+    public LocalDateTime getEndTime()                  { return endTime; }
+    public void setEndTime(LocalDateTime endTime)      { this.endTime = endTime; }
+    public String getInterviewMode()                   { return interviewMode; }
+    public void setInterviewMode(String interviewMode) { this.interviewMode = interviewMode; }
+    public String getModeDetails()                     { return modeDetails; }
+    public void setModeDetails(String modeDetails)     { this.modeDetails = modeDetails; }
 }

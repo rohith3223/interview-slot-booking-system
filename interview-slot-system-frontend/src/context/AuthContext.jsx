@@ -15,13 +15,20 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = (data) => {
     localStorage.setItem('token', data.token)
+    // ✅ Now saving id too!
     localStorage.setItem('user', JSON.stringify({
+      id: data.id,
       email: data.email,
       role: data.role,
       name: data.name
     }))
     setToken(data.token)
-    setUser({ email: data.email, role: data.role, name: data.name })
+    setUser({
+      id: data.id,
+      email: data.email,
+      role: data.role,
+      name: data.name
+    })
   }
 
   const logoutUser = () => {

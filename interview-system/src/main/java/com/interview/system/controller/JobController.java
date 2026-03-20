@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.interview.system.model.User;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +28,14 @@ public class JobController {
     private JobService jobService;
 
     @GetMapping
-    public ResponseEntity<List<Job>> getAll() {
+    public ResponseEntity<List<Job>> getAll(@AuthenticationPrincipal User currentUser) {
+        // ✅ Admin/HR sees ALL jobs including expired and full
+        if (currentUser != null &&
+            (currentUser.getRole().name().equals("ADMIN") ||
+             currentUser.getRole().name().equals("HR"))) {
+            return ResponseEntity.ok(jobService.getAllJobsAdmin());
+        }
+        // ✅ Candidates and others see only active jobs
         return ResponseEntity.ok(jobService.getAllJobs());
     }
 

@@ -10,9 +10,19 @@ public class SlotBookingRequest {
     @NotNull(message = "Job ID is required")
     private Long jobId;
 
-    public Long getSlotId() { return slotId; }
-    public void setSlotId(Long slotId) { this.slotId = slotId; }
+    private String interviewMode; // ONLINE or OFFLINE
 
-    public Long getJobId() { return jobId; }
-    public void setJobId(Long jobId) { this.jobId = jobId; }
+    private String modeDetails;  // Meeting link or Venue address
+
+    public Long getSlotId()                    { return slotId; }
+    public void setSlotId(Long slotId)         { this.slotId = slotId; }
+
+    public Long getJobId()                     { return jobId; }
+    public void setJobId(Long jobId)           { this.jobId = jobId; }
+
+    public String getInterviewMode()                       { return interviewMode; }
+    public void setInterviewMode(String interviewMode)     { this.interviewMode = interviewMode; }
+
+    public String getModeDetails()                         { return modeDetails; }
+    public void setModeDetails(String modeDetails)         { this.modeDetails = modeDetails; }
 }

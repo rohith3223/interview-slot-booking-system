@@ -36,7 +36,9 @@ public class AuthService {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        // ✅ Now includes user id
         return new AuthResponse(
+            user.getId(),
             jwtUtil.generateToken(user),
             user.getEmail(),
             user.getRole().name(),
@@ -55,13 +57,15 @@ public class AuthService {
                 .role(request.getRole())
                 .build();
 
-        userRepository.save(user);
+        User saved = userRepository.save(user);
 
+        // ✅ Now includes user id
         return new AuthResponse(
-            jwtUtil.generateToken(user),
-            user.getEmail(),
-            user.getRole().name(),
-            user.getName()
+            saved.getId(),
+            jwtUtil.generateToken(saved),
+            saved.getEmail(),
+            saved.getRole().name(),
+            saved.getName()
         );
     }
 }
