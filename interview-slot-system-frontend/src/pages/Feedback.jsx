@@ -26,7 +26,10 @@ const Feedback = () => {
         .catch(() => toast.error('Failed to load feedbacks'))
         .finally(() => setLoading(false))
     } else {
-      api.get('/interviews')
+      const endpoint = user?.role === 'CANDIDATE' 
+        ? `/interviews/candidate/${user.id}` 
+        : `/interviews/interviewer/${user.id}`
+      api.get(endpoint)
         .then(r => {
           if (user?.role === 'CANDIDATE') {
             setInterviews(r.data.filter(i =>

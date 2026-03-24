@@ -40,6 +40,7 @@ public class InterviewController {
     }
 
     @GetMapping("/candidate/{id}")
+    @PreAuthorize("hasRole('CANDIDATE') and #id == authentication.principal.id or hasAnyRole('ADMIN','HR')")
     public ResponseEntity<List<Interview>> getByCandidate(@PathVariable Long id) {
         return ResponseEntity.ok(interviewService.getByCandidate(id));
     }
@@ -51,7 +52,7 @@ public class InterviewController {
     }
 
     @GetMapping("/interviewer/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER')")
+    @PreAuthorize("hasRole('INTERVIEWER') and #id == authentication.principal.id or hasAnyRole('ADMIN','HR')")
     public ResponseEntity<List<Interview>> getByInterviewer(@PathVariable Long id) {
         return ResponseEntity.ok(interviewService.getByInterviewer(id));
     }
