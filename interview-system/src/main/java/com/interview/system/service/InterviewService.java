@@ -83,13 +83,11 @@ public class InterviewService {
         Job job = jobRepository.findById(request.getJobId())
                 .orElseThrow(() -> new ResourceNotFoundException("Job", request.getJobId()));
 
-        // ✅ Check if job has reached max candidates
         if (job.getMaxCandidates() != null && job.getBookingCount() != null
                 && job.getBookingCount() >= job.getMaxCandidates()) {
             throw new IllegalStateException("This job has reached maximum candidates!");
         }
 
-        // ✅ Check if job is expired
         if (job.getExpiryDate() != null
                 && job.getExpiryDate().isBefore(java.time.LocalDateTime.now())) {
             throw new IllegalStateException("This job posting has expired!");
@@ -104,14 +102,12 @@ public class InterviewService {
         interview.setJob(job);
         interview.setStatus(InterviewStatus.SCHEDULED);
 
-        // ✅ Get interview mode from SLOT
         interview.setInterviewMode(slot.getInterviewMode() != null
                 ? slot.getInterviewMode() : "ONLINE");
         interview.setModeDetails(slot.getModeDetails());
 
         Interview saved = interviewRepository.save(interview);
 
-        // ✅ Increment booking count
         jobService.incrementBookingCount(job.getId());
 
         return saved;
@@ -153,6 +149,11 @@ public class InterviewService {
 
             if (interview.getFeedback() != null)
                 throw new IllegalStateException("Feedback already submitted.");
+        }
+
+        if ("CANDIDATE".equals(feedbackType)) {
+            if (interview.getStatus() != InterviewStatus.COMPLETED)
+                throw new IllegalStateException("You can only give feedback after the interview is completed.");
         }
 
         Feedback feedback = new Feedback();

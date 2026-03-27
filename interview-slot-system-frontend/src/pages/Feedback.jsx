@@ -15,7 +15,7 @@ const Feedback = () => {
   const [loading, setLoading] = useState(true)
   const [form, setForm] = useState({
     interviewId: '', comments: '', rating: 5,
-    decision: 'SELECTED', feedbackType: ''
+    decision: 'SELECTED'
   })
   const [submitting, setSubmitting] = useState(false)
 
@@ -26,14 +26,14 @@ const Feedback = () => {
         .catch(() => toast.error('Failed to load feedbacks'))
         .finally(() => setLoading(false))
     } else {
-      const endpoint = user?.role === 'CANDIDATE' 
-        ? `/interviews/candidate/${user.id}` 
+      const endpoint = user?.role === 'CANDIDATE'
+        ? `/interviews/candidate/${user.id}`
         : `/interviews/interviewer/${user.id}`
       api.get(endpoint)
         .then(r => {
           if (user?.role === 'CANDIDATE') {
-            setInterviews(r.data.filter(i =>
-              i.status === 'SCHEDULED' || i.status === 'COMPLETED'))
+            // ✅ Fixed: only COMPLETED interviews allowed for feedback
+            setInterviews(r.data.filter(i => i.status === 'COMPLETED'))
           } else {
             setInterviews(r.data.filter(i => i.status === 'COMPLETED'))
           }
@@ -59,7 +59,7 @@ const Feedback = () => {
       toast.success('Feedback submitted successfully!')
       setForm({
         interviewId: '', comments: '', rating: 5,
-        decision: 'SELECTED', feedbackType: ''
+        decision: 'SELECTED'
       })
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to submit feedback')
@@ -84,7 +84,7 @@ const Feedback = () => {
       <div className="main-content flex-grow-1">
         <Navbar title="Feedback" />
 
-        {/* CANDIDATE — Give feedback about interview experience */}
+        {/* CANDIDATE */}
         {user?.role === 'CANDIDATE' && (
           <div className="card">
             <div className="card-header fw-semibold">
@@ -96,8 +96,8 @@ const Feedback = () => {
               ) : interviews.length === 0 ? (
                 <EmptyState
                   icon="📋"
-                  title="No interviews found"
-                  message="You have no interviews to give feedback for yet."
+                  title="No completed interviews"
+                  message="You can only give feedback after your interview is completed."
                 />
               ) : (
                 <form onSubmit={handleSubmit}>
@@ -123,7 +123,7 @@ const Feedback = () => {
                       Your Experience
                     </label>
                     <textarea className="form-control" rows="4"
-                      placeholder="Share your interview experience, how was the process, interviewer, environment..."
+                      placeholder="Share your interview experience..."
                       value={form.comments}
                       onChange={e => setForm({...form, comments: e.target.value})}
                       required />
@@ -137,9 +137,7 @@ const Feedback = () => {
                       value={form.rating}
                       onChange={e => setForm({...form, rating: e.target.value})}
                       required />
-                    <small className="text-muted">
-                      1 = Very Poor, 5 = Excellent
-                    </small>
+                    <small className="text-muted">1 = Very Poor, 5 = Excellent</small>
                   </div>
                   <button type="submit" className="btn btn-primary"
                     disabled={submitting}>
@@ -151,7 +149,7 @@ const Feedback = () => {
           </div>
         )}
 
-        {/* INTERVIEWER — Give feedback about candidate */}
+        {/* INTERVIEWER */}
         {user?.role === 'INTERVIEWER' && (
           <div className="card">
             <div className="card-header fw-semibold">
@@ -195,17 +193,13 @@ const Feedback = () => {
                   </div>
                   <div className="row">
                     <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold">
-                        Rating (1-5)
-                      </label>
+                      <label className="form-label fw-semibold">Rating (1-5)</label>
                       <input type="number" className="form-control"
                         min="1" max="5"
                         value={form.rating}
                         onChange={e => setForm({...form, rating: e.target.value})}
                         required />
-                      <small className="text-muted">
-                        1 = Poor, 5 = Excellent
-                      </small>
+                      <small className="text-muted">1 = Poor, 5 = Excellent</small>
                     </div>
                     <div className="col-md-6 mb-3">
                       <label className="form-label fw-semibold">Decision</label>
@@ -228,7 +222,7 @@ const Feedback = () => {
           </div>
         )}
 
-        {/* ADMIN / HR — View ALL feedbacks */}
+        {/* ADMIN / HR */}
         {(user?.role === 'ADMIN' || user?.role === 'HR') && (
           <div className="card">
             <div className="card-header fw-semibold">
@@ -260,7 +254,8 @@ const Feedback = () => {
                       {feedbacks.map((fb, index) => (
                         <tr key={fb.id}>
                           <td>{index + 1}</td>
-                          <td>Interview #{fb.interviewId || fb.id}</td>
+                          {/* ✅ Fixed: interviewId now comes from backend getter */}
+                          <td>Interview #{fb.interviewId}</td>
                           <td>
                             <span className={`badge ${
                               fb.feedbackType === 'CANDIDATE'

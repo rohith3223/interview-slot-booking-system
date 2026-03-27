@@ -1,5 +1,4 @@
 package com.interview.system.model;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -7,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 @Table(name = "feedbacks")
 public class Feedback {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -60,4 +58,9 @@ public class Feedback {
     public void setFeedbackType(String feedbackType)  { this.feedbackType = feedbackType; }
     public LocalDateTime getCreatedAt()               { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    // ✅ Exposes interviewId in JSON without causing circular reference
+    public Long getInterviewId() {
+        return interview != null ? interview.getId() : null;
+    }
 }

@@ -1,21 +1,18 @@
 package com.interview.system.model;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "interviews")
 public class Interview {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "slot_id", nullable = false)
+    @JsonIgnoreProperties({"interviews", "hibernateLazyInitializer"})
     private InterviewSlot slot;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -38,7 +35,6 @@ public class Interview {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // ✅ New fields for Online/Offline mode
     @Column(name = "interview_mode")
     private String interviewMode;
 

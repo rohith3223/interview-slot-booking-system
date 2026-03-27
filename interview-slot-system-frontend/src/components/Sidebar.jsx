@@ -8,7 +8,7 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     logoutUser()
-    navigate('/login')
+    navigate('/')
   }
 
   const getRoleBadgeColor = (role) => {

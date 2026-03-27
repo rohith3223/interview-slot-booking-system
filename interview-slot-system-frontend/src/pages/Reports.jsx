@@ -8,11 +8,21 @@ import api from '../services/api'
 const Reports = () => {
   const [stats, setStats] = useState(null)
   const [interviews, setInterviews] = useState([])
+  const [jobs, setJobs] = useState([])
+  const [statusFilter, setStatusFilter] = useState('')
+  const [jobFilter, setJobFilter] = useState('')
 
   useEffect(() => {
     getReports().then(setStats).catch(() => {})
     api.get('/interviews').then(r => setInterviews(r.data)).catch(() => {})
+    api.get('/jobs').then(r => setJobs(r.data)).catch(() => {})
   }, [])
+
+  const filtered = interviews.filter(i => {
+    const matchStatus = statusFilter ? i.status === statusFilter : true
+    const matchJob = jobFilter ? i.job?.id === parseInt(jobFilter) : true
+    return matchStatus && matchJob
+  })
 
   return (
     <div className="d-flex">
@@ -42,29 +52,51 @@ const Reports = () => {
         )}
 
         <div className="card">
-          <div className="card-header">All Interviews</div>
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <span>All Interviews ({filtered.length})</span>
+            <div className="d-flex gap-2">
+              <select className="form-select form-select-sm" style={{width: '160px'}}
+                value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
+                <option value="">All Status</option>
+                <option value="SCHEDULED">Scheduled</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="CANCELLED">Cancelled</option>
+              </select>
+              <select className="form-select form-select-sm" style={{width: '180px'}}
+                value={jobFilter} onChange={e => setJobFilter(e.target.value)}>
+                <option value="">All Jobs</option>
+                {jobs.map(j => (
+                  <option key={j.id} value={j.id}>{j.title}</option>
+                ))}
+              </select>
+            </div>
+          </div>
           <div className="card-body">
             <div className="table-responsive">
               <table className="table table-hover">
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>Candidate</th>
+                    <th>Job</th>
+                    <th>Interviewer</th>
                     <th>Status</th>
                     <th>Booked At</th>
-                    <th>Updated At</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {interviews.map((interview, index) => (
+                  {filtered.map((interview, index) => (
                     <tr key={interview.id}>
                       <td>{index + 1}</td>
+                      <td>{interview.candidate?.name || 'N/A'}</td>
+                      <td>{interview.job?.title || 'N/A'}</td>
+                      <td>{interview.slot?.interviewer?.name || 'N/A'}</td>
                       <td>
                         <span className={`badge bg-${getStatusBadge(interview.status)}`}>
                           {interview.status}
                         </span>
                       </td>
                       <td>{interview.bookedAt ? new Date(interview.bookedAt).toLocaleString() : 'N/A'}</td>
-                      <td>{interview.updatedAt ? new Date(interview.updatedAt).toLocaleString() : 'N/A'}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -370,3 +370,22 @@ body.dark-mode input[type="datetime-local"] {
   border-color: #1a4a8a !important;
   color: #e0e0e0 !important;
 }
+
+/* ✅ Fix auth card dark mode */
+body.dark-mode .auth-card {
+  background-color: #16213e !important;
+  color: #e0e0e0 !important;
+}
+
+body.dark-mode .auth-card h2,
+body.dark-mode .auth-card p,
+body.dark-mode .auth-card label,
+body.dark-mode .auth-card small {
+  color: #e0e0e0 !important;
+}
+
+/* ✅ Fix bg-transparent card-footer in dark mode */
+body.dark-mode .card-footer.bg-transparent {
+  background-color: #16213e !important;
+  border-color: #0f3460 !important;
+}

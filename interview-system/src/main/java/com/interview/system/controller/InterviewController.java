@@ -40,7 +40,7 @@ public class InterviewController {
     }
 
     @GetMapping("/candidate/{id}")
-    @PreAuthorize("hasRole('CANDIDATE') and #id == authentication.principal.id or hasAnyRole('ADMIN','HR')")
+    @PreAuthorize("(hasRole('CANDIDATE') and #id == authentication.principal.id) or hasAnyRole('ADMIN','HR')")
     public ResponseEntity<List<Interview>> getByCandidate(@PathVariable Long id) {
         return ResponseEntity.ok(interviewService.getByCandidate(id));
     }
@@ -52,12 +52,11 @@ public class InterviewController {
     }
 
     @GetMapping("/interviewer/{id}")
-    @PreAuthorize("hasRole('INTERVIEWER') and #id == authentication.principal.id or hasAnyRole('ADMIN','HR')")
+    @PreAuthorize("(hasRole('INTERVIEWER') and #id == authentication.principal.id) or hasAnyRole('ADMIN','HR')")
     public ResponseEntity<List<Interview>> getByInterviewer(@PathVariable Long id) {
         return ResponseEntity.ok(interviewService.getByInterviewer(id));
     }
 
-    // ✅ New API — Get all feedbacks for Admin/HR
     @GetMapping("/feedback")
     @PreAuthorize("hasAnyRole('ADMIN','HR')")
     public ResponseEntity<List<Feedback>> getAllFeedbacks() {
@@ -86,7 +85,6 @@ public class InterviewController {
         return ResponseEntity.ok(interviewService.completeInterview(id));
     }
 
-    // ✅ Updated — Now allows CANDIDATE and INTERVIEWER both
     @PostMapping("/feedback")
     @PreAuthorize("hasAnyRole('INTERVIEWER','CANDIDATE')")
     public ResponseEntity<Feedback> feedback(

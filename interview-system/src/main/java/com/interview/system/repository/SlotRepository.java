@@ -3,9 +3,11 @@ package com.interview.system.repository;
 import com.interview.system.model.InterviewSlot;
 import com.interview.system.model.InterviewSlot.SlotStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,6 +17,12 @@ public interface SlotRepository extends JpaRepository<InterviewSlot, Long> {
     List<InterviewSlot> findByInterviewerId(Long interviewerId);
     List<InterviewSlot> findByJobId(Long jobId);
     List<InterviewSlot> findByJobIdAndStatus(Long jobId, SlotStatus status);
+
+    // ✅ Bulk JPQL delete — avoids SELECT+loop, requires @Transactional + @Modifying
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM InterviewSlot s WHERE s.job.id = :jobId")
+    void deleteAllByJobId(@Param("jobId") Long jobId);
 
     @Query("SELECT s FROM InterviewSlot s WHERE s.interviewer.id = :interviewerId " +
            "AND s.startTime < :endTime AND s.endTime > :startTime")

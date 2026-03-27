@@ -36,6 +36,24 @@ public class UserController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/interviewers")
+    @PreAuthorize("hasAnyRole('ADMIN','HR','INTERVIEWER')")
+    public ResponseEntity<List<Map<String, Object>>> getInterviewers() {
+        List<User> interviewers = userRepository.findAll().stream()
+                .filter(u -> u.getRole().name().equals("INTERVIEWER"))
+                .collect(java.util.stream.Collectors.toList());
+
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (User user : interviewers) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", user.getId());
+            map.put("name", user.getName());
+            map.put("email", user.getEmail());
+            result.add(map);
+        }
+        return ResponseEntity.ok(result);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
