@@ -1,6 +1,5 @@
 package com.interview.system.service;
 import com.interview.system.exception.ResourceNotFoundException;
-import com.interview.system.model.Interview;
 import com.interview.system.model.Job;
 import com.interview.system.model.Job.JobStatus;
 import com.interview.system.repository.FeedbackRepository;
@@ -87,21 +86,19 @@ public class JobService {
         if (!jobRepository.existsById(id))
             throw new ResourceNotFoundException("Job", id);
 
-        // Step 1 — get all interviews for this job
-        List<Interview> interviews = interviewRepository.findByJobId(id);
+        // Step 1 — delete feedbacks (FK: feedbacks.interview_id → interviews.id)
+        feedbackRepository.deleteAllByJobId(id);
+        feedbackRepository.deleteAllBySlotJobId(id);
 
-        // Step 2 — delete feedbacks first (feedbacks FK → interviews)
-        for (Interview interview : interviews) {
-            feedbackRepository.deleteByInterviewId(interview.getId());
-        }
-
-        // Step 3 — bulk delete all interviews for this job (interviews FK → slots)
+        // Step 2 — delete interviews by BOTH job_id AND slot_id
+        //           (some interviews may only link via slot, not job)
         interviewRepository.deleteAllByJobId(id);
+        interviewRepository.deleteAllBySlotJobId(id);
 
-        // Step 4 — now safe to delete slots (no interviews reference them)
+        // Step 3 — NOW safe to delete slots (interviews referencing slots are gone)
         slotRepository.deleteAllByJobId(id);
 
-        // Step 5 — delete job
+        // Step 4 — delete job
         jobRepository.deleteById(id);
     }
 }

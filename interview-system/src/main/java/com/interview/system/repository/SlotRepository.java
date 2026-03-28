@@ -18,10 +18,10 @@ public interface SlotRepository extends JpaRepository<InterviewSlot, Long> {
     List<InterviewSlot> findByJobId(Long jobId);
     List<InterviewSlot> findByJobIdAndStatus(Long jobId, SlotStatus status);
 
-    // ✅ Bulk JPQL delete — avoids SELECT+loop, requires @Transactional + @Modifying
+    // ✅ Native SQL bulk delete — avoids JPQL cache issues and FK violations
     @Transactional
     @Modifying
-    @Query("DELETE FROM InterviewSlot s WHERE s.job.id = :jobId")
+    @Query(value = "DELETE FROM interview_slots WHERE job_id = :jobId", nativeQuery = true)
     void deleteAllByJobId(@Param("jobId") Long jobId);
 
     @Query("SELECT s FROM InterviewSlot s WHERE s.interviewer.id = :interviewerId " +

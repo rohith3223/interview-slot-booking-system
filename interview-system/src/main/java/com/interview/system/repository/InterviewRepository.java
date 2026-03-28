@@ -18,11 +18,17 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
     List<Interview> findBySlotInterviewerId(Long interviewerId);
     boolean existsBySlotIdAndCandidateId(Long slotId, Long candidateId);
 
-    // ✅ Bulk JPQL delete — avoids SELECT+loop and FK issues
+    // ✅ Native SQL bulk delete — avoids JPQL cache issues and FK violations
     @Transactional
     @Modifying
-    @Query("DELETE FROM Interview i WHERE i.job.id = :jobId")
+    @Query(value = "DELETE FROM interviews WHERE job_id = :jobId", nativeQuery = true)
     void deleteAllByJobId(@Param("jobId") Long jobId);
+
+    // ✅ Also delete interviews linked via slot (covers cases where job_id may differ)
+    @Transactional
+    @Modifying
+    @Query(value = "DELETE FROM interviews WHERE slot_id IN (SELECT id FROM interview_slots WHERE job_id = :jobId)", nativeQuery = true)
+    void deleteAllBySlotJobId(@Param("jobId") Long jobId);
 
     @Query("SELECT i FROM Interview i WHERE i.job.id = :jobId AND i.status = :status")
     List<Interview> findByJobIdAndStatus(
