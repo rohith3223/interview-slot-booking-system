@@ -1,17 +1,32 @@
-# Backend
+# ===== BACKEND =====
 interview-system/target/
-interview-system/*.class
+interview-system/**/*.class
+interview-system/.mvn/
 
-# Frontend
+# ===== FRONTEND =====
 interview-slot-system-frontend/node_modules/
 interview-slot-system-frontend/dist/
+interview-slot-system-frontend/.env
+interview-slot-system-frontend/.env.local
 
-# ZIP files
-backend.zip
-frontend.zip
+# ===== SECRETS =====
+*.env
+**/application-prod.properties
+**/application-local.properties
 
-# IDE
+# ===== IDE =====
+.metadata/
+.vscode/
 .idea/
 *.iml
-.vscode/
-.metadata/ 
+.settings/
+.classpath
+.project
+*.launch
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== ZIP =====
+*.zip
